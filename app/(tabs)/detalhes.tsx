@@ -82,13 +82,13 @@ export default function Detalhes() {
     },
   ].filter(item => item.value > 0);
 
-  // Preparar dados para gráfico de pizza - Números por Rifa
-  const numbersByRaffle = chartData.raffleData
-    .filter((r: any) => r.total_numbers > 0)
+  // Preparar dados para gráfico de pizza - Arrecadação por Rifa
+  const revenueByRaffle = chartData.raffleData
+    .filter((r: any) => r.total_value > 0)
     .slice(0, 5)
     .map((r: any, index: number) => ({
       name: r.prize_name.length > 15 ? r.prize_name.substring(0, 15) + '...' : r.prize_name,
-      value: r.total_numbers,
+      value: r.total_value,
       color: ['#f6a623', '#1db954', '#3b82f6', '#8b5cf6', '#ec4899'][index % 5],
       legendFontColor: '#9ca3af',
       legendFontSize: 12,
@@ -137,12 +137,12 @@ export default function Detalhes() {
           </View>
         )}
 
-        {/* Gráfico de Números por Rifa */}
-        {numbersByRaffle.length > 0 && (
+        {/* Gráfico de Arrecadação por Rifa */}
+        {revenueByRaffle.length > 0 && (
           <View style={styles.chartCard}>
-            <Text style={styles.chartTitle}>🎫 Números Vendidos por Rifa</Text>
+            <Text style={styles.chartTitle}>💰 Valores Arrecadados por Rifa</Text>
             <PieChart
-              data={numbersByRaffle}
+              data={revenueByRaffle}
               width={screenWidth - 40}
               height={220}
               chartConfig={chartConfig}
@@ -151,6 +151,47 @@ export default function Detalhes() {
               paddingLeft="15"
               absolute
             />
+            
+            {/* Detalhes de cada rifa */}
+            <View style={{ marginTop: 16 }}>
+              {chartData.raffleData
+                .filter((r: any) => r.total_value > 0)
+                .slice(0, 5)
+                .map((raffle: any, index: number) => (
+                  <View key={index} style={styles.raffleDetailCard}>
+                    <View style={styles.raffleHeader}>
+                      <View style={[styles.colorDot, { 
+                        backgroundColor: ['#f6a623', '#1db954', '#3b82f6', '#8b5cf6', '#ec4899'][index % 5] 
+                      }]} />
+                      <Text style={styles.raffleTitle}>{raffle.prize_name}</Text>
+                    </View>
+                    <View style={styles.raffleInfo}>
+                      <View style={styles.raffleInfoItem}>
+                        <Text style={styles.raffleInfoLabel}>📅 Data do Sorteio</Text>
+                        <Text style={styles.raffleInfoValue}>
+                          {raffle.draw_date || 'Não definida'}
+                        </Text>
+                      </View>
+                      <View style={styles.raffleInfoItem}>
+                        <Text style={styles.raffleInfoLabel}>💵 Valor por Número</Text>
+                        <Text style={styles.raffleInfoValue}>
+                          R$ {(raffle.number_price || 0).toFixed(2).replace('.', ',')}
+                        </Text>
+                      </View>
+                      <View style={styles.raffleInfoItem}>
+                        <Text style={styles.raffleInfoLabel}>🎫 Números Vendidos</Text>
+                        <Text style={styles.raffleInfoValue}>{raffle.total_numbers}</Text>
+                      </View>
+                      <View style={styles.raffleInfoItem}>
+                        <Text style={styles.raffleInfoLabel}>💰 Total Arrecadado</Text>
+                        <Text style={[styles.raffleInfoValue, { color: '#1db954', fontWeight: '700' }]}>
+                          R$ {raffle.total_value.toFixed(2).replace('.', ',')}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                ))}
+            </View>
           </View>
         )}
 
@@ -308,5 +349,51 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     fontSize: 10,
     marginTop: 2,
+  },
+  raffleDetailCard: {
+    backgroundColor: '#0a0a0a',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#3a2820',
+  },
+  raffleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#3a2820',
+  },
+  colorDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 10,
+  },
+  raffleTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+    flex: 1,
+  },
+  raffleInfo: {
+    gap: 8,
+  },
+  raffleInfoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  raffleInfoLabel: {
+    color: '#9ca3af',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  raffleInfoValue: {
+    color: '#e5e5e5',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

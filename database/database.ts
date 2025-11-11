@@ -462,8 +462,9 @@ export async function getChartData() {
       id: number;
       prize_name: string;
       status: string;
+      draw_date: string | null;
       number_price: number | null;
-    }>('SELECT id, prize_name, status, number_price FROM raffles');
+    }>('SELECT id, prize_name, status, draw_date, number_price FROM raffles');
 
     // Para cada sorteio, buscar números vendidos e calcular valor arrecadado
     const raffleData = await Promise.all(
@@ -479,6 +480,8 @@ export async function getChartData() {
         return {
           prize_name: raffle.prize_name,
           status: raffle.status,
+          draw_date: raffle.draw_date,
+          number_price: raffle.number_price,
           total_numbers: totalNumbers,
           total_value: totalValue,
         };
