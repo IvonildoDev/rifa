@@ -19,11 +19,18 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      initialRouteName="participar"
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: useClientOnlyValue(false, true),
       }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Início',
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="participar"
         options={{
